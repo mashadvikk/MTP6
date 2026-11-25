@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Города Тульской области</title>
+  <style>
+    body { max-width: 640px; margin: 30px auto; font-family: Georgia, serif; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { border: 1px solid #c9b8a8; padding: 7px 12px; }
+    th { background: #f0e6dc; }
+    th a { color: #5a3a22; text-decoration: none; }
+    td + td { text-align: right; }
+    tfoot td { font-weight: bold; background: #faf6f2; }
+  </style>
+</head>
+<body>
+  <h1>Города Тульской области</h1>
+  <form>
+    <input name="q" value="{{ query }}" placeholder="Название города">
+    <button>Найти</button>
+    {% if query %}<a href="{{ url_for('cities') }}">Сбросить</a>{% endif %}
+  </form>
+  <table>
+    <thead>
+      <tr>
+        {% for key, column in columns.items() %}
+        {% set reverse = 1 if key == sort and not desc else 0 %}
+        <th>
+          <a href="{{ url_for('cities', sort=key, desc=reverse, q=query) }}">{{ column[0] }}</a>
+          {% if key == sort %}{{ "▼" if desc else "▲" }}{% endif %}
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, year, people in rows %}
+      <tr><td>{{ name }}</td><td>{{ year }}</td><td>{{ people | spaced }}</td></tr>
+      {% else %}
+      <tr><td colspan="3">Ничего не найдено</td></tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><td>Городов: {{ rows | length }}</td><td></td><td>{{ total | spaced }}</td></tr>
+    </tfoot>
+  </table>
+</body>
+</html>
